@@ -106,9 +106,9 @@ app.get(
 );
 
 //Routes
-app.get("/", (req, res) => {
-  res.send("Home Page");
-});
+// app.get("/", (req, res) => {
+//   res.send("Home Page");
+// });
 
 app.get("/demouser", async (req, res) => {
   let fakeUser = new User({
