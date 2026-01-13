@@ -1,10 +1,12 @@
 <% layout("/layouts/boilerplate") %>
 <body>
   <script>
-      // Pass location to JS
+    // Pass location to JS
     const listingLocation = "<%= listing.location %>";
-      // If you want coordinates:
+    console.log(listingLocation)
+    // If you want coordinates:
     const listingCoordinates = <%- JSON.stringify(listing.coordinates) %>;
+    console.log(listingCoordinates)
   </script>
   <div class="row mt-3">
     <!-- Title of listing -->
@@ -111,15 +113,15 @@
         <!--Comments section-->
         <div class="mb-3 mt-3">
           <label for="comment" class="form-label">Comments</label>
+          <textarea
+            name="review[comment]"
+            id="comment"
+            class="form-control"
+            cols="30"
+            rows="5"
+            required
+          ></textarea>
         </div>
-        <textarea
-          name="review[comment]"
-          id="comment"
-          class="form-control"
-          cols="30"
-          rows="5"
-          required
-        ></textarea>
 
         <div class="invalid-feedback">Please add some comments for review</div>
         <button class="btn btn-outline-dark mt-3">Submit</button>
@@ -147,7 +149,7 @@
             action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE"
             class="mb-3"
           >
-            <%if(currUser){%>
+            <%if(currUser && currUser._id.equals(review.author._id)){%>
             <button class="btn btn-dark">Delete</button>
             <%}%>
           </form>

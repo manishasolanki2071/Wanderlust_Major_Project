@@ -17,7 +17,6 @@ async function getCoordinates(location) {
 
 module.exports.index = async (req, res) => {
   const allListings = await Listing.find({});
-  // console.log(allListings.length);
   res.render("listings/index.ejs", { allListings });
 };
 
@@ -34,40 +33,15 @@ module.exports.showListing = async (req, res) => {
     req.flash("error", "Listing you requested for does not exist!");
     return res.redirect("/listings");
   }
-  // console.log(listing);
   res.render("listings/show.ejs", { listing });
 };
 
 module.exports.createListing = async (req, res) => {
   let response = await getCoordinates(req.body.listing.location);
-  console.log(response); // { latitude: '28.6139391', longitude: '77.2090212' }
-  //handling server side errors(which may occur while sending request from hopscotch or thunderclient)
-  // if (!req.body.listing) {
-  //   throw new ExpressError(400, "Send valid data for listing");
-  // }
-  // console.log(req.body.listing);
+  // console.log(response); // { latitude: '28.6139391', longitude: '77.2090212' }
   let url = req.file.path;
   let filename = req.file.filename;
-  // console.log(url, filename);
   const newListing = new Listing(req.body.listing);
-
-  // if (!newListing.title) {
-  //   throw new ExpressError(400, "Description is missing");
-  // }
-  // if (!newListing.description) {
-  //   throw new ExpressError(400, "Description is missing");
-  // }
-  // if (!newListing.location) {
-  //   throw new ExpressError(400, "Description is missing");
-  // }
-  //this type of error handling requires a lot of effort therefore we use joi , an npm package
-
-  // let result = listingSchema.validate(req.body);
-  // console.log(result);
-  // if (result.error) {
-  //   throw new ExpressError(400, result.error);
-  // }
-  // console.log(req.user._id);
   newListing.owner = req.user._id;
   newListing.image = { url, filename }; // multer is used to handle file uploads
   newListing.coordinates = response;
@@ -96,6 +70,9 @@ module.exports.updateListing = async (req, res) => {
   }
   let { id } = req.params;
   let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+  let response = await getCoordinates(req.body.listing.location);
+  listing.coordinates = response;
+  await listing.save();
   if (typeof req.file !== "undefined") {
     let url = req.file.path;
     let filename = req.file.filename;

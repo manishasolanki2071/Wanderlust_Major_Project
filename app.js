@@ -10,9 +10,6 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
-const { listingSchema } = require("./schema.js");
-const Review = require("./models/review.js");
-const { reviewSchema } = require("./schema.js");
 
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
@@ -26,7 +23,7 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 const { errorMonitor } = require("events");
 
-// const MONGO_URL = "mongodb://localhost:27017/wanderlust";
+const MONGO_URL = "mongodb://localhost:27017/wanderlust";
 const dbUrl = process.env.ATLASDB_URL;
 
 const store = MongoStore.create({
@@ -132,7 +129,6 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Something went wrong!" } = err;
   res.status(statusCode).render("error.ejs", { message });
-  // res.status(statusCode).send(message);
 });
 
 const PORT = 8080;
